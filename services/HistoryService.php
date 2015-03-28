@@ -4,7 +4,7 @@ require_once ('ProcessingService.php');
 class HistoryService{
 	public $access_token = '43588672.6acf407.51e35be17cf94965a6509ecdd092ea3e';
 	public $api_search = 'https://api.instagram.com/v1/media/search';
-
+    private $db;
 	public $city = array(
 		"bucuresti"   => array(
 		        "id"  => 1,
@@ -24,7 +24,20 @@ class HistoryService{
 		);
 	
 	public function HistoryService(){
-
+        $servername = getenv('IP');
+        $username = getenv('C9_USER');
+        $password = "";
+        $database = "hipstagram";
+        $dbport = 3306;
+        
+        // Create connection
+        $this->db = new mysqli($servername, $username, $password, $database, $dbport);
+        
+        // Check connection
+        if ($this->db->connect_error) {
+            die("Connection failed: " . $this->db->connect_error);
+        } 
+        echo "Connected successfully (".$this->db->host_info.")";
 	}
 
 	private function push($data){
@@ -34,9 +47,14 @@ class HistoryService{
 		foreach ($data as $im){
 		    $proc = new ProcessingService('pics/sample-image1.jpg');
             $result = $proc->process();
-            print_r($result);
-            die();
-		    //echo "<img src='{$im['url']}' style='width:300px;height:300px;margin-right:5px;margin-bottom:5px;' />";
+            if ($result == false) {
+                continue;
+            }
+		    $datetime = date('Y-m-d H:i:s', $im['time']);
+		    mysqli_query($this->db,"INSERT INTO bigdata 
+		            (`date`,`location`,`image`,`white`,`black`,`navyblue`,`green`,`red`,`darkred`,`purple`,`orange`,`yellow`,`limegreen`,`teal`,`aqualight`,`royalblue`,`hotpink`,`darkgrey`,`lightgrey`,`likes`) 
+             VALUES ('$datetime', '{$im['city']}' , '{$im['url']}' , '{$im['white']}','{$im['black']}','{$im['navyblue']}','{$im['green']}','{$im['red']}','{$im['darkred']}','{$im['purple']}','{$im['orange']}','{$im['yellow']}','{$im['limegreen']}','{$im['teal']}','{$im['aqualight']}','{$im['royalblue']}','{$im['hotpink']}','{$im['darkgrey']}','{$im['lightgrey']}' ,'{$im['likes']}' )");
+		    
 		}
 	}
 
@@ -45,11 +63,33 @@ class HistoryService{
 			 return false;
 
         $data = array('run');
-           
+        $break_after = 600;
+        $should_i_break = 0;
 		while ($from<$to && count($data)>0) {
+			$nice_to = date('Y-m-d H:i:s', $to);
 			$data = $this->getFromAPI($city,$to);
 			//do something with it
+			
+			$time = microtime();
+            $time = explode(' ', $time);
+            $time = $time[1] + $time[0];
+            $start = $time;
+
+			echo "Batch of ".count($data)." found.($nice_to) \n";
 			$this->push($data); 
+			
+			$time = microtime();
+            $time = explode(' ', $time);
+            $time = $time[1] + $time[0];
+            $finish = $time;
+            $total_time = round(($finish - $start), 4);
+			echo "Batch finished after $total_time \n";
+			$should_i_break += $total_time;
+			if($should_i_break>$break_after)
+			    {
+			        echo "Well the 10 minutes of fame passed.BREAK! \n";
+			        break;
+			    }
 		}
 	}
 
@@ -109,15 +149,3 @@ class HistoryService{
 
 
 }
-
-/*
-$hf = new HistoryService();
-
-$yesterday = time() - (1 * 24 * 60 * 60); 
-$today_3_hours_ago = time() - (3 *60*60);
-$today = time(); 
-
-
-$hf->feed('bucuresti',$today_3_hours_ago,$today);
-*/
-

@@ -85,8 +85,6 @@ class ProcessingService {
         $detector = new svay\FaceDetector('libs/detection.dat');
         $faceDetected = $detector->faceDetect($this->fileUrl);
         if ($faceDetected) {
-            //echo "face detected\n";
-            
             $imageW = imagesx($this->image);
             $imageH = imagesy($this->image);
             $faceX = $detector->face['x'];
@@ -135,6 +133,8 @@ class ProcessingService {
             }
             
             return $this->pixels;
+        } else {
+            return false;
         }
     }
     
