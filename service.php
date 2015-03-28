@@ -28,9 +28,9 @@ $data = mysqli_query($db, "SELECT city, AVG(white) as white,
       AVG(darkgrey) as darkgrey,
       AVG(lightgrey) as lightgrey
       from bigdata JOIN location on location.id = bigdata.location
-      GROUP BY city DESC
+      WHERE `date` between '$from' and '$to'
+      GROUP BY city DESC");
 
-      ");
 $retArray = array();
 
 foreach($data as $row) {
@@ -38,3 +38,5 @@ foreach($data as $row) {
 }
 
 echo json_encode($retArray);
+
+mysqli_close($db);

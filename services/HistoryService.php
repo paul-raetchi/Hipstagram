@@ -40,12 +40,20 @@ class HistoryService{
         echo "Connected successfully (".$this->db->host_info.")";
 	}
 
+	private function addWp($url,&$i){
+				$i = $i+1;
+				$i = $i % 4;
+				$url = str_replace("https://","",$url);
+				return "http://i".$i.".wp.com/".$url;
+	}
+	
 	private function push($data){
 	    if (count($data) == 0) 
 	        return false;
 	        
 		foreach ($data as $im){
-		    $proc = new ProcessingService('pics/sample-image1.jpg');
+			$i=0;
+		    $proc = new ProcessingService($this->addWp($im['url'],$i));
             $result = $proc->process();
             if ($result == false) {
                 continue;

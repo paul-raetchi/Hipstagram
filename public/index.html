@@ -1,52 +1,134 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/5.5.4/css/bootstrap.min.css">
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/5.5.4/css/bootstrap-theme.min.css">
-
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/5.5.4/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
 	<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
 
 	<meta charset="UTF-8">
 	<title>Hipstagram</title>
+	<style>
+		body {
+			background: #ddd;
+			font-family: Segoe UI;
+		}
+		#chart {
+			margin: 0px -250px 0px -120px;
+			display:block;
+			width: 100%;
+		}
+	</style>
 </head>
   <body>
+  		<div id="controls">
+  			<label for="country">Show color trends in 
+	  			<select name="country" id="country">
+	  				<option value="1">Romania</option>
+	  			</select>,
+  			</label>
+  			<label for="from">from
+  				<input type="date" id="from" value="2015-01-01">
+  			</label>
+  			<label for="to">to
+  				<input type="date" id="to" value="2015-03-28">
+  			</label>
+  			<label for="update">----- Update
+				<button id="update" onclick="updateChart()">now</button>
+  			</label>
+  			
+  		</div>
 	  <script type="text/javascript">
+	  var updateChart = function() {
+	  	alert(1);
+	  	var country = $('#country').val();
+	  	var from = $('#from').val();
+	  	var to = $('#to').val();
+		var url = '/service.php';
+		console.log('loading...');
+		$.ajax({
+			url: url,
+			data: {
+				from: from,
+				to: to
+			},
+			success: function(cities) {
+				console.log('loaded...');
+				console.log(cities);
+				if(cities.length === 0) {
+					cities = {
+				  		'Bucuresti':[3,5,2,0,0,5,0,3,4,5,6,0,1,0,0,0],
+				  		'Cluj':[5,1,3,0,0,0,0,3,4,5,6,0,0,0,0,2],
+				  		'Timisoara':[1,2,11,3,1,2,0,3,4,5,6,0,3,0,0,0],
+				  		'Constanta':[6, 3, 0, 1,2,3,1,2,2,3,5,4,2,3,2,2]
+			 		};
+				}
+		      	var header = ['Color',
+			      	'White',
+			      	'Black',
+			      	'Navy blue',
+			      	'Green',
+			      	'Red',
+			      	'Dark red',
+			      	'Purple',
+			      	'Orange',
+			      	'Yellow',
+			      	'Lime green',
+			      	'Teal',
+					'Aqua light',
+					'Royal blue',
+					'Hot pink',
+					'Dark grey',
+					'Light grey'];
+				var bars = [header];
+				for(var i = 0; i < cities.length; i++) {
+					//cities[i].push[''];
+					bars.push(cities[i]);
+				}
+				console.log(bars);
+		        // Instantiate and draw our chart, passing in some options.
+		        var chart = new google.visualization.BarChart(document.getElementById('chart'));
+		        chart.draw(google.visualization.arrayToDataTable(bars), {
+		        	legend: { position: 'top', maxLines: 2},
+		        	bar: { groupWidth: '99%', groupHeihgt: '99%' },
+		        	bars: 'horizontal',
+		        	title: 'Color trends per cities',
+		        	width: 1400,
+		        	height: 700,
+		        	isStacked: true,
+		        	colors: [
+			        	'#ffffff',
+			        	'#000000',
+			        	'#00008b',
+			        	'#008000',
+			        	'#ff0000',
+				      	'#8b0000',
+				      	'#800080',
+				      	'#ffa500',
+				      	'#ffff00',
+				      	'#32cd32',
+				      	'#008080',
+						'#add8e6',
+						'#0000ff',
+						'#ff69b4',
+						'#808080',
+						'#d3d3d3'],
+				    chartArea: {
+				        backgroundColor: {
+				            stroke: '#888',
+				            strokeWidth: 1
+				        }
+				    },
+			        backgroundColor: '#ddd',
+		        });
+			},
+			dataType: 'json'
+		});
+	  }
+
       google.load('visualization', '1.0', {'packages':['corechart']});
 
       // Set a callback to run when the Google Visualization API is loaded.
-      google.setOnLoadCallback(drawChart);
-      function drawChart() {
-      	var header = ['Color', 'Chocolate', 'Vanilla','White','Silver','Black',
-			'Navy blue','Sky blue','Teal','Lime green','Olive green','Yellow',
-			'Gold','Orange','Red','Pink','Purple', 'Other colors', { role: 'annotation' }];
-		var data = google.visualization.arrayToDataTable([
-			header,
-	  		["Bucuresti",0,0,0,0,0,5,0,3,4,5,6,0,1,0,0,0, 18, ''],
-	  		["Cluj",0,0,0,0,0,0,0,3,4,5,6,0,0,0,0,2, 22, ''],
-	  		["Timisoara",1,2,11,3,1,2,0,3,4,5,6,0,3,0,0,0, 1, ''],
-	  		["Constanta",6, 3, 0, 1,2,3,1,2,0,3,5,6,0,3,0,0, 7, '']
-		]);
-
-        // Instantiate and draw our chart, passing in some options.
-        var chart = new google.visualization.BarChart(document.getElementById('chart'));
-        chart.draw(data, {
-        	legend: { position: 'top', maxLines: 2},
-        	bar: { groupWidth: '99%', groupHeihgt: '99%' },
-        	'title':'Color trends per cities', 'width':1500,'height':700, isStacked: true,
-        	colors: ['chocolate', 'wheat','white','silver','black',
-			'navy','skyblue','teal','lime','olive','yellow',
-			'gold','orange','red','pink','purple', 'gray'],
-		    chartArea: {
-		        backgroundColor: {
-		            stroke: '#888',
-		            strokeWidth: 1
-		        }
-		    },
-	        backgroundColor: '#ddd',
-        });
-      }
+      //google.setOnLoadCallback(drawChart);
+      
 	</script>
 
     <!--Div that will hold the pie chart-->
