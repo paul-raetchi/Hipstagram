@@ -1,0 +1,2 @@
+#mongod --bind_ip=$IP --dbpath=data --nojournal --smallfiles --rest "$@"
+mongod --dbpath=data --nojournal --smallfiles --rest "$@"

@@ -5,10 +5,21 @@ class HistoryService{
 	public $api_search = 'https://api.instagram.com/v1/media/search';
 
 	public $city = array(
-		"bucuresti" => array(
-				"lat"=> 44.4268,
-				"lng"=> 26.1025
-			)
+		"bucuresti"   => array(
+		        "id"  => 1,
+				"lat" => 44.4268,
+				"lng" => 26.1025
+			    ),
+		'cluj'        => array(
+		        "id"  => 2,
+		        "lat" => 46.7667,
+		        "lng" => 23.5833 
+		        ),
+		 'timisoara'  => array(
+		        "id"  => 3,
+		        "lat" => 45.7597,
+		        "lng" => 21.2300
+		        )
 		);
 	
 	public function HistoryService(){
@@ -16,20 +27,24 @@ class HistoryService{
 	}
 
 	private function push($data){
-		echo "<Hr><pre>";
-		var_dump($data);
-		echo "</pre>";
+	    if (count($data) == 0) 
+	        return false;
+	        
+		foreach ($data as $im){
+		    //echo "<img src='{$im['url']}' style='width:300px;height:300px;margin-right:5px;margin-bottom:5px;' />";
+		}
 	}
 
 	public function feed($city,$from,$to){
 		if (!isset($this->city[$city]))
 			 return false;
 
-		while ($from<$to) {
+        $data = array('run');
+           
+		while ($from<$to && count($data)>0) {
 			$data = $this->getFromAPI($city,$to);
-
 			//do something with it
-			$this->push($data);
+			$this->push($data); 
 		}
 	}
 
@@ -50,7 +65,7 @@ class HistoryService{
 		$data = json_decode($raw);
 
 		$this->discard($data,$timestamp);
-		return $this->prepare($data);
+		return $this->prepare($data,$city);
 	}
 
 	private function discard(&$feed,&$timestamp){
@@ -72,13 +87,15 @@ class HistoryService{
 		}
 	}
 
-	private function prepare(&$feed){
+	private function prepare(&$feed,$city){
 		$data = array();
 
 		foreach ($feed->data as $media){
 			$data[] = array(
+			        'city' => $this->city[$city]['id'],
+			        'time' => $media->created_time,
 					'likes' => $media->likes->count,
-					'media_url' => $media->images->standard_resolution->url,
+					'url' => $media->images->standard_resolution->url,
 			);
 		}
 		return $data; 
