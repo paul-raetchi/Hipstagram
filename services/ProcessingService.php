@@ -123,11 +123,19 @@ class ProcessingService {
             }
             
             // process color data
-            // - get color only if > 20
-            // - return percents
+            $total = $newWidth * $newHeight;
             
-            //print_r($this->pixels);
-            $this->displayImage();
+            foreach ($this->pixels as $color => $count) {
+                $percent = $count*100/$total;
+                if ($percent <= 5) {
+                    $this->pixels[$color] = 0;
+                } else {
+                    $this->pixels[$color] = round($percent);
+                }
+            }
+            
+            print_r($this->pixels);
+            //$this->displayImage();
         }
     }
     
