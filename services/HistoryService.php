@@ -1,4 +1,5 @@
 <?php
+require_once ('ProcessingService.php');
 
 class HistoryService{
 	public $access_token = '43588672.6acf407.51e35be17cf94965a6509ecdd092ea3e';
@@ -31,6 +32,10 @@ class HistoryService{
 	        return false;
 	        
 		foreach ($data as $im){
+		    $proc = new ProcessingService('pics/sample-image1.jpg');
+            $result = $proc->process();
+            print_r($result);
+            die();
 		    //echo "<img src='{$im['url']}' style='width:300px;height:300px;margin-right:5px;margin-bottom:5px;' />";
 		}
 	}

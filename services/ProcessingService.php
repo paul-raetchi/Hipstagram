@@ -134,8 +134,7 @@ class ProcessingService {
                 }
             }
             
-            print_r($this->pixels);
-            //$this->displayImage();
+            return $this->pixels;
         }
     }
     
