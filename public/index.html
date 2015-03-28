@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/5.5.4/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/5.5.4/css/bootstrap-theme.min.css">
 
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/5.5.4/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
 	<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
 
@@ -13,41 +13,41 @@
 </head>
   <body>
 	  <script type="text/javascript">
-
-      // Load the Visualization API and the piechart package.
       google.load('visualization', '1.0', {'packages':['corechart']});
 
       // Set a callback to run when the Google Visualization API is loaded.
       google.setOnLoadCallback(drawChart);
-
-      // Callback that creates and populates a data table,
-      // instantiates the pie chart, passes in the data and
-      // draws it.
       function drawChart() {
-        // Create the data table.
-        var data = new google.visualization.DataTable();
-        data.addColumn('string', 'Topping');
-        data.addColumn('number', 'Slices');
-        data.addRows([
-          ['Mushrooms', 3],
-          ['Onions', 1],
-          ['Olives', 1],
-          ['Zucchini', 1],
-          ['Pepperoni', 2]
-        ]);
-
-        // Set chart options
-        var options = {'title':'How Much Pizza I Ate Last Night',
-                       'width':400,
-                       'height':300};
+		var data = google.visualization.arrayToDataTable([
+			['Color', 'chocolate', 'vanilla','white','silver','black',
+			'navy','skyblue','teal','lime','olive','yellow',
+			'gold','orange','red','pink','purple', 'other', { role: 'annotation' }],
+	  		["Bucuresti",0,0,0,0,0,5,0,3,4,5,6,0,1,0,0,0, 18, ''],
+	  		["Cluj",0,0,0,0,0,0,0,3,4,5,6,0,0,0,0,2, 22, ''],
+	  		["Timisoara",1,2,11,3,1,2,0,3,4,5,6,0,3,0,0,0, 1, ''],
+	  		["Constanta",6, 3, 0, 1,2,3,1,2,0,3,5,6,0,3,0,0, 7, '']
+		]);
 
         // Instantiate and draw our chart, passing in some options.
-        var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
-        chart.draw(data, options);
+        var chart = new google.visualization.BarChart(document.getElementById('chart'));
+        chart.draw(data, {
+        	legend: { position: 'top', maxLines: 2},
+        	bar: { groupWidth: '99%', groupHeihgt: '99%' },
+        	'title':'Color trends per cities', 'width':1500,'height':800, isStacked: true,
+        	colors: ['chocolate', 'beige','white','silver','black',
+			'navy','skyblue','teal','lime','olive','yellow',
+			'gold','orange','red','pink','purple', 'gray'],
+		    chartArea: {
+		        backgroundColor: {
+		            stroke: '#888',
+		            strokeWidth: 1
+		        }
+		    },
+        });
       }
 	</script>
 
     <!--Div that will hold the pie chart-->
-    <div id="chart_div"></div>
+    <div id="chart"></div>
   </body>
 </html>

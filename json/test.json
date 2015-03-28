@@ -5,9 +5,7 @@
 	  "Timisoara":	[0,0,0,0,0,0,0,3,4,5,6,0,0,0,0,0]
 	},
 	"colors": [
-		"black", "white", "gray", "red",
-		"green", "blue", "yellow", "purple",
-		"pink", "navy", "cyan", "orange",
-		"olive", "gold", "vanilla", "chocolate"
+		"chocolate","vanilla","white","silver","black","navy","skyblue","teal",
+		"lime","olive","yellow","gold","orange","red","pink","purple"
 	]
 }
