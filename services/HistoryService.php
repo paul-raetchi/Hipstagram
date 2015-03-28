@@ -24,8 +24,10 @@ class HistoryService{
 		);
 	
 	public function HistoryService(){
-        $servername = getenv('IP');
+        //$servername = getenv('IP');
         $username = getenv('C9_USER');
+        $username = 'root';
+        
         $password = "";
         $database = "hipstagram";
         $dbport = 3306;

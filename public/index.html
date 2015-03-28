@@ -37,8 +37,7 @@
   			
   		</div>
 	  <script type="text/javascript">
-	  var updateChart = function() {
-	  	alert(1);
+	  function updateChart() {
 	  	var country = $('#country').val();
 	  	var from = $('#from').val();
 	  	var to = $('#to').val();
@@ -50,17 +49,18 @@
 				from: from,
 				to: to
 			},
-			success: function(cities) {
-				console.log('loaded...');
-				console.log(cities);
+			success: function(response) {
+			var response = {};
+				var cities = $.map(response, function(el) { return el; });
 				if(cities.length === 0) {
-					cities = {
-				  		'Bucuresti':[3,5,2,0,0,5,0,3,4,5,6,0,1,0,0,0],
-				  		'Cluj':[5,1,3,0,0,0,0,3,4,5,6,0,0,0,0,2],
-				  		'Timisoara':[1,2,11,3,1,2,0,3,4,5,6,0,3,0,0,0],
-				  		'Constanta':[6, 3, 0, 1,2,3,1,2,2,3,5,4,2,3,2,2]
-			 		};
+					var	cities = {
+					  		'Bucuresti':[3,5,2,0,0,5,0,3,4,5,6,0,1,0,0,0],
+					  		'Cluj':[5,1,3,0,0,0,0,3,4,5,6,0,0,0,0,2],
+					  		'Timisoara':[1,2,11,3,1,2,0,3,4,5,6,0,3,0,0,0],
+					  		'Constanta':[6, 3, 0, 1,2,3,1,2,2,3,5,4,2,3,2,2]
+					};	
 				}
+				var keys = Object.keys(cities);
 		      	var header = ['Color',
 			      	'White',
 			      	'Black',
@@ -77,16 +77,26 @@
 					'Royal blue',
 					'Hot pink',
 					'Dark grey',
-					'Light grey'];
+					'Light grey',
+					{role: 'annotation'}];
 				var bars = [header];
-				for(var i = 0; i < cities.length; i++) {
-					//cities[i].push[''];
-					bars.push(cities[i]);
+				for(var i = 0; i < keys.length; i++) {
+					var colors = $.map(cities[keys[i]], function(el) { return el; });
+					colors.unshift(keys[i]);
+					colors.push('');
+					bars.push(colors);
+					colors = 0;
 				}
+				var x = [ ['Element', 'Density', { role: 'style' }, { role: 'annotation' } ],
+         ['Copper', 8.94, '#b87333', 'Cu' ],
+         ['Silver', 10.49, 'silver', 'Ag' ],
+         ['Gold', 19.30, 'gold', 'Au' ],
+         ['Platinum', 21.45, 'color: #e5e4e2', 'Pt' ]];
+         console.log(x);
 				console.log(bars);
 		        // Instantiate and draw our chart, passing in some options.
 		        var chart = new google.visualization.BarChart(document.getElementById('chart'));
-		        chart.draw(google.visualization.arrayToDataTable(bars), {
+		        chart.draw(google.visualization.arrayToDataTable([bars]), {
 		        	legend: { position: 'top', maxLines: 2},
 		        	bar: { groupWidth: '99%', groupHeihgt: '99%' },
 		        	bars: 'horizontal',
