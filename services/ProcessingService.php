@@ -10,10 +10,12 @@ class ProcessingService {
     {
         $this->fileUrl = $fileUrl;
         $this->image = $this->openImage($fileUrl);
- 
-        $this->width  = imagesx($this->image);
-        $this->height = imagesy($this->image);
-    }
+     }
+     
+     function __destruct() {
+        imagedestroy($this->image);
+        imagedestroy($this->imageCanvas);
+     }
     
     private function openImage($fileUrl)
     {
@@ -44,10 +46,31 @@ class ProcessingService {
         $detector = new svay\FaceDetector('libs/detection.dat');
         $faceDetected = $detector->faceDetect($this->fileUrl);
         if ($faceDetected) {
-            echo "face detected";
-            //$detector->toJpeg();
-            echo $detector->face['x'];
+            //echo "face detected\n";
+            
+            $imageW = imagesx($this->image);
+            $imageH = imagesy($this->image);
+            $faceX = $detector->face['x'];
+            $faceY = $detector->face['y'];
+            $faceW = $detector->face['w'];
+            
+            $newWidth = ceil($faceW * 2);
+            $newHeight = $imageH-$faceY-$faceW;
+            $cropStartX = $faceX - $faceW/2;
+            $cropStartY = $faceY+$faceW;
+            
+            $this->imageCanvas = imagecreatetruecolor($newWidth , $newHeight);
+            imagecopy($this->imageCanvas, $this->image, 0, 0, $cropStartX, $cropStartY, $newWidth, $newHeight);
+            
+            
         }
+    }
+    
+    public function displayImage()
+    {
+        // Output and free from memory
+        header('Content-Type: image/jpeg');
+        imagejpeg($this->imageCanvas);
     }
 }
 
